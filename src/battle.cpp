@@ -172,5 +172,70 @@ std::vector<std::shared_ptr<IBattle_log>> Battle::start_war(bool should_log_to_c
     return logger->getLogs();
 }
 
+void Battle::start_war_test() {
+    this->addSubscriber(this->logger);
+
+    std::vector<std::vector<std::shared_ptr<Warrior>>> allWarriors;
+    allWarriors.push_back(std::vector<std::shared_ptr<Warrior>>());
+    allWarriors.push_back(std::vector<std::shared_ptr<Warrior>>());
+
+    for (auto &army : this->squads) {
+        for (std::shared_ptr<Warrior> const &warrior : army->getArmy()->getAllWarriors()) {
+            allWarriors[getTeam(warrior)].push_back(warrior);
+        }
+    }
+
+    int totalWarriors = allWarriors[0].size() + allWarriors[1].size();
+
+    std::map<Kingdom, int> deadCount;
+    int totalDeadCount = 0;
+
+    while (totalDeadCount < totalWarriors && (allWarriors[0].size() >= 1 &&  allWarriors[1].size() >= 1)) {
+        int first_warrior_index = rand() % (allWarriors[Sarleon].size());
+        int second_warrior_index = rand() % (allWarriors[Ravenstern].size());
+
+        if (first_warrior_index == second_warrior_index) {
+            continue;
+        }
+
+        if (allWarriors[0][first_warrior_index]->getTactic() != nullptr && !allWarriors[0][first_warrior_index]->getTactic()->canAttack(allWarriors[1][second_warrior_index])) {
+            continue;
+        }
+
+        tick++;
+
+        auto first_warrior = allWarriors[Sarleon][first_warrior_index];
+        auto second_warrior = allWarriors[Ravenstern][second_warrior_index];
+
+        double first_win_chance = first_warrior->getChance(*this, second_warrior);
+        double second_win_chance = second_warrior->getChance(*this, first_warrior);
+
+        int random_max = (int)1e8;
+        int first_rand = rand() % random_max;
+        int second_rand = rand() % random_max;
+
+        if (first_rand < first_win_chance * random_max / (first_win_chance + second_win_chance)) {
+            second_warrior->setDead(true);
+            std::swap(allWarriors[Ravenstern][second_warrior_index], allWarriors[Ravenstern][allWarriors[Ravenstern].size() - 1]);
+            allWarriors[Ravenstern].pop_back();
+            deadCount[Ravenstern]++;
+
+            auto new_log = Battle_log(second_warrior, first_warrior, tick);
+            logger->addLog(std::make_shared<Battle_log>(new_log));
+        }
+
+        if (second_rand < second_win_chance * random_max / (first_win_chance + second_win_chance)) {
+            first_warrior->setDead(true);
+            std::swap(allWarriors[Sarleon][first_warrior_index], allWarriors[Sarleon][allWarriors[Sarleon].size() - 1]);
+            allWarriors[Sarleon].pop_back();
+            deadCount[Sarleon]++;
+
+            auto new_log = Battle_log(first_warrior, second_warrior, tick);
+            logger->addLog(std::make_shared<Battle_log>(new_log));
+        }
+    }
+    this->notifyOnBattleEnded();
+    this->disposeSubscriptions();
+}
 
 

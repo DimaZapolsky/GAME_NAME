@@ -18,7 +18,7 @@ public:
     virtual std::vector<std::shared_ptr<IBattle_log>> start_war(bool should_log_to_console) = 0;
     virtual void setTactics() = 0;
     virtual void addSubscriber(std::shared_ptr<IEndBattleObserver> subscriber) = 0;
-
+    virtual void start_war_test() = 0;
 };
 
 class Battle: public IBattle, public IEndBattleObservable {
@@ -37,8 +37,9 @@ public:
     void setTactics() override ;
     int get_ticks() const override;
     std::vector<std::shared_ptr<IBattle_log>> start_war(bool should_log_to_console) override;
+    void start_war_test() override;
     terrainEnum getTerrain() const;
-    void addSubscriber(std::shared_ptr<IEndBattleObserver> subscriber) override ;
+    void addSubscriber(std::shared_ptr<IEndBattleObserver> subscriber) override;
 };
 
 #endif //GAME_BATTLE_H
