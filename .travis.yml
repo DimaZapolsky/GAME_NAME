@@ -1,0 +1,21 @@
+language: cpp
+
+os:
+    - osx
+
+compiler:
+    - clang
+
+script:
+    - mkdir build
+    - cd build
+    - cmake ..
+    - cmake --build .
+    - ctest --output-on-failure
+
+notifications:  
+    email:  
+      recipients:  
+      - dima_zapolsky@mail.ru  
+      on_success: always  
+      on_failure: always
