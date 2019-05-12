@@ -13,24 +13,19 @@ protected:
     std::shared_ptr<RavensternWarriorFactory> ravenFactory;
     std::shared_ptr<IBattle_logger> logger;
 
-    virtual void TearDown() {
-
-    }
     std::shared_ptr<Warrior> victim;
     std::shared_ptr<Warrior> predator;
     int tick = 1;
 
+    virtual void TearDown() {
+
+    }
+
     virtual void SetUp() {
 
     }
-    std::shared_ptr<SarleonWarriorFactory> sarleonFactory;
-    std::shared_ptr<RavensternWarriorFactory> ravenFactory;
-    std::shared_ptr<IBattle_logger> logger;
-
-    std::shared_ptr<Warrior> victim;
-    std::shared_ptr<Warrior> predator;
 public:
-    LogTest() : Test() {
+    LoggerTest() : Test() {
         ravenFactory = std::shared_ptr<RavensternWarriorFactory>(new RavensternWarriorFactory());
         sarleonFactory = std::shared_ptr<SarleonWarriorFactory>(new SarleonWarriorFactory());
         logger = std::shared_ptr<IBattle_logger>(new Battle_logger());
@@ -38,6 +33,7 @@ public:
         predator = ravenFactory->createArcher();
     }
 };
+
 
 
 TEST_F(LoggerTest, putLogSuccessfully) {

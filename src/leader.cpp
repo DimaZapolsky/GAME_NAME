@@ -154,10 +154,6 @@ void Leader::buyEquipment() {
     army->buyEquipment(charisma);
 }
 
-void Leader::setArmy(std::shared_ptr<Army> &army) {
-    this->army = army;
-}
-
 std::shared_ptr<Army> Leader::getArmy() {
     return army;
 }

@@ -63,7 +63,6 @@ public:
     int getFoodCnt();
     void addFood(int value);
     void addHonor(int value);
-    void setArmy(std::shared_ptr<Army> &army);
 };
 
 #endif //GAME_LEADER_H
